@@ -420,28 +420,33 @@
 
     <div class="divider"><span>✦</span></div>
 
-    <form id="signupForm">
+    <form id="signupForm" action="https://formsubmit.co/1430576027@qq.com" method="POST">
+        <!-- FormSubmit config: disable redirect, no reply, captcha -->
+        <input type="hidden" name="_subject" value="💕 新报名 - 浪漫约会活动">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_template" value="table">
+
         <div class="form-group">
             <label>你的名字 <span class="required">*</span></label>
-            <input type="text" id="name" placeholder="请输入你的姓名" required>
+            <input type="text" name="姓名" id="name" placeholder="请输入你的姓名" required>
         </div>
 
         <div class="form-group">
             <label>联系电话 <span class="required">*</span></label>
-            <input type="tel" id="phone" placeholder="请输入手机号码" required>
+            <input type="tel" name="电话" id="phone" placeholder="请输入手机号码" required>
         </div>
 
         <div class="form-group">
             <label>想要蛋糕吗？</label>
             <div class="radio-group">
-                <label><input type="radio" name="cake" value="要" checked> 要 🍰</label>
-                <label><input type="radio" name="cake" value="不要"> 不要</label>
+                <label><input type="radio" name="蛋糕" value="要 🍰" checked> 要 🍰</label>
+                <label><input type="radio" name="蛋糕" value="不要"> 不要</label>
             </div>
         </div>
 
         <div class="form-group">
             <label>想对我说些什么 <span class="required">*</span></label>
-            <textarea id="message" placeholder="写一段悄悄话吧 …" required></textarea>
+            <textarea name="悄悄话" id="message" placeholder="写一段悄悄话吧 …" required></textarea>
         </div>
 
         <button type="submit" class="btn-submit">💕 报名参加</button>
@@ -487,24 +492,40 @@
 
     // Form submit
     document.getElementById('signupForm').addEventListener('submit', function (e) {
-        e.preventDefault();
+        // Validate
         const name = document.getElementById('name').value.trim();
         const phone = document.getElementById('phone').value.trim();
-        const cake = document.querySelector('input[name="cake"]:checked').value;
         const message = document.getElementById('message').value.trim();
+        const cake = document.querySelector('input[name="蛋糕"]:checked').value;
 
         if (!name || !phone || !message) {
+            e.preventDefault();
             alert('请填写所有必填信息哦 💕');
             return;
         }
 
+        // Save to localStorage as backup
         const entry = { name, phone, cake, message, time: new Date().toISOString() };
         const list = JSON.parse(localStorage.getItem('signups') || '[]');
         list.push(entry);
         localStorage.setItem('signups', JSON.stringify(list));
 
-        document.getElementById('formContainer').style.display = 'none';
-        document.getElementById('successToast').style.display = 'block';
+        // Submit via fetch to show our own success page
+        e.preventDefault();
+        const form = this;
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        }).then(() => {
+            document.getElementById('formContainer').style.display = 'none';
+            document.getElementById('successToast').style.display = 'block';
+        }).catch(() => {
+            // Even if email fails, submission is saved locally
+            document.getElementById('formContainer').style.display = 'none';
+            document.getElementById('successToast').style.display = 'block';
+        });
     });
 
     function showResponses() {
