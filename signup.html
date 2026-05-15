@@ -420,33 +420,28 @@
 
     <div class="divider"><span>✦</span></div>
 
-    <form id="signupForm" action="https://formsubmit.co/1430576027@qq.com" method="POST">
-        <!-- FormSubmit config: disable redirect, no reply, captcha -->
-        <input type="hidden" name="_subject" value="💕 新报名 - 浪漫约会活动">
-        <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_template" value="table">
-
+    <form id="signupForm">
         <div class="form-group">
             <label>你的名字 <span class="required">*</span></label>
-            <input type="text" name="姓名" id="name" placeholder="请输入你的姓名" required>
+            <input type="text" id="name" placeholder="请输入你的姓名" required>
         </div>
 
         <div class="form-group">
             <label>联系电话 <span class="required">*</span></label>
-            <input type="tel" name="电话" id="phone" placeholder="请输入手机号码" required>
+            <input type="tel" id="phone" placeholder="请输入手机号码" required>
         </div>
 
         <div class="form-group">
             <label>想要蛋糕吗？</label>
             <div class="radio-group">
-                <label><input type="radio" name="蛋糕" value="要 🍰" checked> 要 🍰</label>
-                <label><input type="radio" name="蛋糕" value="不要"> 不要</label>
+                <label><input type="radio" name="cake" value="要 🍰" checked> 要 🍰</label>
+                <label><input type="radio" name="cake" value="不要"> 不要</label>
             </div>
         </div>
 
         <div class="form-group">
             <label>想对我说些什么 <span class="required">*</span></label>
-            <textarea name="悄悄话" id="message" placeholder="写一段悄悄话吧 …" required></textarea>
+            <textarea id="message" placeholder="写一段悄悄话吧 …" required></textarea>
         </div>
 
         <button type="submit" class="btn-submit">💕 报名参加</button>
@@ -454,7 +449,7 @@
 
     <div class="footer-text">— 期 待 与 你 共 度 这 一 天 —</div>
 
-    <div class="admin-link"><a href="#" onclick="showResponses()">📋 查看报名列表</a></div>
+    <div class="admin-link"><a href="https://github.com/totoro-hong/anniversary-signup/issues" target="_blank">📋 管理员查看报名列表</a></div>
 </div>
 
 <!-- Success Toast -->
@@ -463,15 +458,7 @@
         <div class="heart-big">💖</div>
         <h2>报名成功！</h2>
         <p>5 月 16 日，不见不散 💕</p>
-    </div>
-</div>
-
-<!-- Responses list -->
-<div class="container" id="responsesContainer" style="display:none;">
-    <div class="toast" id="responsesList" style="text-align:left;padding:20px 0;">
-        <h2 style="font-family:'Ma Shan Zheng',cursive;text-align:center;font-size:28px;background:linear-gradient(135deg,#e11d48,#6366f1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:16px;">📋 报名列表</h2>
-        <div id="responsesContent"></div>
-        <button onclick="backToForm()" style="margin-top:16px;padding:10px 32px;border:1px solid rgba(225,29,72,0.2);border-radius:50px;background:transparent;color:#6b21a8;font-family:'ZCOOL XiaoWei',serif;font-size:15px;cursor:pointer;width:100%;letter-spacing:2px;">返回</button>
+        <p style="margin-top:8px;font-size:13px;color:rgba(107,33,168,0.4);">已通过 Issue 提交，请等待回复 ❤</p>
     </div>
 </div>
 
@@ -490,19 +477,34 @@
         bg.appendChild(el);
     }
 
+    // GitHub token (injected by GitHub Actions during deploy)
+    const GH_TOKEN = '{{GH_ISSUES_TOKEN}}';
+    const GH_REPO = 'totoro-hong/anniversary-signup';
+
     // Form submit
     document.getElementById('signupForm').addEventListener('submit', function (e) {
-        // Validate
+        e.preventDefault();
+
         const name = document.getElementById('name').value.trim();
         const phone = document.getElementById('phone').value.trim();
         const message = document.getElementById('message').value.trim();
-        const cake = document.querySelector('input[name="蛋糕"]:checked').value;
+        const cake = document.querySelector('input[name="cake"]:checked').value;
 
         if (!name || !phone || !message) {
-            e.preventDefault();
             alert('请填写所有必填信息哦 💕');
             return;
         }
+
+        const body = `## 💕 新报名
+
+| 项目 | 内容 |
+|------|------|
+| **姓名** | ${name} |
+| **电话** | ${phone} |
+| **蛋糕** | ${cake} |
+| **悄悄话** | ${message} |
+| **时间** | ${new Date().toLocaleString('zh-CN')} |
+`;
 
         // Save to localStorage as backup
         const entry = { name, phone, cake, message, time: new Date().toISOString() };
@@ -510,60 +512,34 @@
         list.push(entry);
         localStorage.setItem('signups', JSON.stringify(list));
 
-        // Submit via fetch to show our own success page
-        e.preventDefault();
-        const form = this;
-        const formData = new FormData(form);
+        // Create GitHub Issue
+        const submitBtn = this.querySelector('.btn-submit');
+        submitBtn.textContent = '💕 提交中…';
+        submitBtn.disabled = true;
 
-        fetch(form.action, {
+        fetch(`https://api.github.com/repos/${GH_REPO}/issues`, {
             method: 'POST',
-            body: formData
-        }).then(() => {
+            headers: {
+                'Authorization': `Bearer ${GH_TOKEN}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/vnd.github.v3+json'
+            },
+            body: JSON.stringify({
+                title: `💕 ${name} 的报名`,
+                body: body,
+                labels: ['报名']
+            })
+        }).then(res => {
+            if (!res.ok) throw new Error('Failed');
             document.getElementById('formContainer').style.display = 'none';
             document.getElementById('successToast').style.display = 'block';
         }).catch(() => {
-            // Even if email fails, submission is saved locally
+            // Submission saved locally even if GitHub fails
             document.getElementById('formContainer').style.display = 'none';
             document.getElementById('successToast').style.display = 'block';
         });
     });
 
-    function showResponses() {
-        const list = JSON.parse(localStorage.getItem('signups') || '[]');
-        const container = document.getElementById('responsesContent');
-        if (list.length === 0) {
-            container.innerHTML = '<p style="text-align:center;color:#6b21a8;opacity:0.5;">暂无报名</p>';
-        } else {
-            container.innerHTML = list.map((item, i) => `
-                <div style="background:rgba(225,29,72,0.04);border:1px solid rgba(225,29,72,0.08);border-radius:14px;padding:14px 16px;margin-bottom:10px;">
-                    <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
-                        <span style="color:#9d174d;font-weight:700;">${item.name}</span>
-                        <span style="color:#6b21a8;opacity:0.4;font-size:13px;">${item.phone}</span>
-                    </div>
-                    <div style="color:#6b4c7a;font-size:14px;line-height:1.6;">${item.message}</div>
-                    ${item.cake ? '<div style="color:#e11d48;font-size:13px;margin-top:4px;">蛋糕：' + item.cake + '</div>' : ''}
-                </div>
-            `).join('');
-        }
-        document.getElementById('formContainer').style.display = 'none';
-        document.getElementById('successToast').style.display = 'none';
-        document.getElementById('responsesContainer').style.display = 'block';
-    }
-
-    function backToForm() {
-        document.getElementById('responsesContainer').style.display = 'none';
-        document.getElementById('formContainer').style.display = 'block';
-    }
-
-    // Save signups data as JSON for export (in case user wants to download)
-    window.exportData = function() {
-        const data = localStorage.getItem('signups') || '[]';
-        const blob = new Blob([data], {type: 'application/json'});
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = '报名数据.json';
-        a.click();
-    }
 </script>
 
 </body>
