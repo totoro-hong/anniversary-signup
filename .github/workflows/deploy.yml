@@ -17,7 +17,14 @@ jobs:
         env:
           TOKEN: ${{ secrets.GH_ISSUES_TOKEN }}
         run: |
-          sed -i "s@{{GH_ISSUES_TOKEN}}@${TOKEN}@g" signup.html
+          python3 << 'EOF'
+import os
+token = os.environ.get('TOKEN', '')
+content = open('signup.html', 'r').read()
+content = content.replace('{{GH_ISSUES_TOKEN}}', token)
+open('signup.html', 'w').write(content)
+print('Token injected successfully')
+EOF
 
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4
