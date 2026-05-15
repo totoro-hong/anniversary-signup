@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一周年 · 浪漫约会邀请</title>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #fdf2f8 0%, #fce7f3 20%, #ede9fe 50%, #dbeafe 80%, #fdf2f8 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            font-family: 'ZCOOL XiaoWei', '楷体', 'KaiTi', serif;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Floating particles */
+        .particles-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            animation: floatUp linear infinite;
+        }
+
+        .particle.r { background: rgba(225, 29, 72, 0.15); }
+        .particle.b { background: rgba(37, 99, 235, 0.12); }
+        .particle.g { background: rgba(212, 168, 75, 0.15); }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% {
+                transform: translateY(-10vh) translateX(60px) scale(1);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(20px);
+            border-radius: 28px;
+            padding: 48px 40px;
+            max-width: 520px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(225, 29, 72, 0.08),
+                        0 8px 24px rgba(37, 99, 235, 0.06),
+                        0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            bottom: -1px;
+            border-radius: 28px;
+            background: linear-gradient(135deg, rgba(225,29,72,0.15), transparent 40%, transparent 60%, rgba(37,99,235,0.15));
+            z-index: -1;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            -webkit-mask-composite: xor;
+            padding: 1px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .header .sub-label {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(225,29,72,0.08), rgba(37,99,235,0.08));
+            color: #be185d;
+            padding: 6px 24px;
+            border-radius: 20px;
+            font-size: 13px;
+            letter-spacing: 4px;
+            margin-bottom: 14px;
+            border: 1px solid rgba(225, 29, 72, 0.12);
+        }
+
+        .header h1 {
+            font-family: 'Ma Shan Zheng', '华文行楷', 'Xingkai SC', cursive;
+            font-size: 44px;
+            background: linear-gradient(135deg, #e11d48, #be185d 30%, #6366f1 70%, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.35;
+            letter-spacing: 4px;
+        }
+
+        .header .date {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 18px;
+            color: #831843;
+            margin-top: 10px;
+            letter-spacing: 6px;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 28px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+        }
+
+        .divider::before {
+            background: linear-gradient(90deg, transparent, rgba(225,29,72,0.3));
+        }
+        .divider::after {
+            background: linear-gradient(90deg, rgba(37,99,235,0.3), transparent);
+        }
+
+        .divider span {
+            color: rgba(225, 29, 72, 0.4);
+            font-size: 14px;
+        }
+
+        /* Activity cards */
+        .activity-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin: 8px 0 4px;
+        }
+
+        .activity-card {
+            background: linear-gradient(145deg, rgba(225,29,72,0.04), rgba(37,99,235,0.03));
+            border: 1px solid rgba(225, 29, 72, 0.08);
+            border-radius: 20px;
+            padding: 20px 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(225, 29, 72, 0.2);
+            box-shadow: 0 8px 24px rgba(225, 29, 72, 0.06);
+        }
+
+        .activity-card .icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .activity-card .title {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 20px;
+            color: #9d174d;
+            letter-spacing: 2px;
+        }
+
+        .activity-card .detail {
+            font-size: 13px;
+            color: #6b4c7a;
+            margin-top: 4px;
+            letter-spacing: 1px;
+            line-height: 1.5;
+        }
+
+        .activity-card .time {
+            display: inline-block;
+            margin-top: 6px;
+            font-size: 12px;
+            color: #2563eb;
+            background: rgba(37, 99, 235, 0.08);
+            padding: 2px 12px;
+            border-radius: 10px;
+            letter-spacing: 1px;
+        }
+
+        .activity-card:nth-child(2) .time {
+            color: #e11d48;
+            background: rgba(225, 29, 72, 0.08);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 15px;
+            color: #6b21a8;
+            margin-bottom: 6px;
+            letter-spacing: 2px;
+        }
+
+        .form-group label .required {
+            color: #e11d48;
+            margin-left: 2px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 13px 16px;
+            border: 1.5px solid rgba(225, 29, 72, 0.1);
+            border-radius: 14px;
+            font-size: 15px;
+            font-family: 'ZCOOL XiaoWei', '楷体', serif;
+            background: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s ease;
+            outline: none;
+            color: #1e0a3c;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #818cf8;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+            background: #fff;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(107, 33, 168, 0.25);
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 90px;
+            line-height: 1.6;
+        }
+
+        /* radio group for cake */
+        .radio-group {
+            display: flex;
+            gap: 24px;
+            margin-top: 6px;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            color: #6b21a8;
+            letter-spacing: 1px;
+        }
+
+        .radio-group input[type="radio"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(225, 29, 72, 0.25);
+            border-radius: 50%;
+            background: #fff;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            padding: 0;
+        }
+
+        .radio-group input[type="radio"]:checked {
+            border-color: #e11d48;
+            background: radial-gradient(circle, #e11d48 40%, transparent 42%);
+            box-shadow: 0 0 12px rgba(225, 29, 72, 0.15);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #e11d48, #9333ea 50%, #6366f1);
+            color: #fff;
+            font-family: 'Ma Shan Zheng', '华文行楷', cursive;
+            font-size: 22px;
+            letter-spacing: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 28px rgba(225, 29, 72, 0.25);
+            margin-top: 6px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 36px rgba(225, 29, 72, 0.35);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 14px;
+            color: rgba(107, 33, 168, 0.35);
+            letter-spacing: 3px;
+        }
+
+        /* Toast / success message */
+        .toast {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .toast .heart-big {
+            font-size: 64px;
+            animation: pulse 1.2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        .toast h2 {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 32px;
+            background: linear-gradient(135deg, #e11d48, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 16px 0 8px;
+        }
+
+        .toast p {
+            color: #6b21a8;
+            font-size: 16px;
+        }
+
+        /* View responses button */
+        .admin-link {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 12px;
+        }
+        .admin-link a {
+            color: rgba(107, 33, 168, 0.3);
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+        .admin-link a:hover {
+            color: rgba(107, 33, 168, 0.6);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 28px 18px;
+            }
+            .header h1 {
+                font-size: 32px;
+            }
+            .activity-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="particles-bg" id="particlesBg"></div>
+
+<div class="container" id="formContainer">
+    <div class="header">
+        <div class="sub-label">✦ 邀 请 函 ✦</div>
+        <h1>一周年<br>浪漫约会活动</h1>
+        <div class="date">5 月 16 日 · 与 你 共 赴</div>
+    </div>
+
+    <div class="divider"><span>✦</span></div>
+
+    <div class="activity-grid">
+        <div class="activity-card">
+            <div class="icon">🎤</div>
+            <div class="title">脱口秀</div>
+            <div class="detail">单立人 DownTown</div>
+            <div class="time">16:00</div>
+        </div>
+        <div class="activity-card">
+            <div class="icon">🍷</div>
+            <div class="title">浪漫晚餐</div>
+            <div class="detail">COMMUNE RESERVE.</div>
+            <div class="time">18:00</div>
+        </div>
+    </div>
+
+    <div class="divider"><span>✦</span></div>
+
+    <form id="signupForm">
+        <div class="form-group">
+            <label>你的名字 <span class="required">*</span></label>
+            <input type="text" id="name" placeholder="请输入你的姓名" required>
+        </div>
+
+        <div class="form-group">
+            <label>联系电话 <span class="required">*</span></label>
+            <input type="tel" id="phone" placeholder="请输入手机号码" required>
+        </div>
+
+        <div class="form-group">
+            <label>想要蛋糕吗？</label>
+            <div class="radio-group">
+                <label><input type="radio" name="cake" value="要" checked> 要 🍰</label>
+                <label><input type="radio" name="cake" value="不要"> 不要</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>想对我说些什么 <span class="required">*</span></label>
+            <textarea id="message" placeholder="写一段悄悄话吧 …" required></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit">💕 报名参加</button>
+    </form>
+
+    <div class="footer-text">— 期 待 与 你 共 度 这 一 天 —</div>
+
+    <div class="admin-link"><a href="#" onclick="showResponses()">📋 查看报名列表</a></div>
+</div>
+
+<!-- Success Toast -->
+<div class="container" id="successToast" style="display:none;">
+    <div class="toast">
+        <div class="heart-big">💖</div>
+        <h2>报名成功！</h2>
+        <p>5 月 16 日，不见不散 💕</p>
+    </div>
+</div>
+
+<!-- Responses list -->
+<div class="container" id="responsesContainer" style="display:none;">
+    <div class="toast" id="responsesList" style="text-align:left;padding:20px 0;">
+        <h2 style="font-family:'Ma Shan Zheng',cursive;text-align:center;font-size:28px;background:linear-gradient(135deg,#e11d48,#6366f1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:16px;">📋 报名列表</h2>
+        <div id="responsesContent"></div>
+        <button onclick="backToForm()" style="margin-top:16px;padding:10px 32px;border:1px solid rgba(225,29,72,0.2);border-radius:50px;background:transparent;color:#6b21a8;font-family:'ZCOOL XiaoWei',serif;font-size:15px;cursor:pointer;width:100%;letter-spacing:2px;">返回</button>
+    </div>
+</div>
+
+<script>
+    // Floating particles
+    const bg = document.getElementById('particlesBg');
+    for (let i = 0; i < 35; i++) {
+        const el = document.createElement('span');
+        el.className = 'particle ' + (i % 3 === 0 ? 'r' : i % 3 === 1 ? 'b' : 'g');
+        const size = 4 + Math.random() * 8;
+        el.style.width = size + 'px';
+        el.style.height = size + 'px';
+        el.style.left = Math.random() * 100 + '%';
+        el.style.animationDuration = (18 + Math.random() * 22) + 's';
+        el.style.animationDelay = (Math.random() * 28) + 's';
+        bg.appendChild(el);
+    }
+
+    // Form submit
+    document.getElementById('signupForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const name = document.getElementById('name').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const cake = document.querySelector('input[name="cake"]:checked').value;
+        const message = document.getElementById('message').value.trim();
+
+        if (!name || !phone || !message) {
+            alert('请填写所有必填信息哦 💕');
+            return;
+        }
+
+        const entry = { name, phone, cake, message, time: new Date().toISOString() };
+        const list = JSON.parse(localStorage.getItem('signups') || '[]');
+        list.push(entry);
+        localStorage.setItem('signups', JSON.stringify(list));
+
+        document.getElementById('formContainer').style.display = 'none';
+        document.getElementById('successToast').style.display = 'block';
+    });
+
+    function showResponses() {
+        const list = JSON.parse(localStorage.getItem('signups') || '[]');
+        const container = document.getElementById('responsesContent');
+        if (list.length === 0) {
+            container.innerHTML = '<p style="text-align:center;color:#6b21a8;opacity:0.5;">暂无报名</p>';
+        } else {
+            container.innerHTML = list.map((item, i) => `
+                <div style="background:rgba(225,29,72,0.04);border:1px solid rgba(225,29,72,0.08);border-radius:14px;padding:14px 16px;margin-bottom:10px;">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                        <span style="color:#9d174d;font-weight:700;">${item.name}</span>
+                        <span style="color:#6b21a8;opacity:0.4;font-size:13px;">${item.phone}</span>
+                    </div>
+                    <div style="color:#6b4c7a;font-size:14px;line-height:1.6;">${item.message}</div>
+                    ${item.cake ? '<div style="color:#e11d48;font-size:13px;margin-top:4px;">蛋糕：' + item.cake + '</div>' : ''}
+                </div>
+            `).join('');
+        }
+        document.getElementById('formContainer').style.display = 'none';
+        document.getElementById('successToast').style.display = 'none';
+        document.getElementById('responsesContainer').style.display = 'block';
+    }
+
+    function backToForm() {
+        document.getElementById('responsesContainer').style.display = 'none';
+        document.getElementById('formContainer').style.display = 'block';
+    }
+
+    // Save signups data as JSON for export (in case user wants to download)
+    window.exportData = function() {
+        const data = localStorage.getItem('signups') || '[]';
+        const blob = new Blob([data], {type: 'application/json'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = '报名数据.json';
+        a.click();
+    }
+</script>
+
+</body>
+</html>
