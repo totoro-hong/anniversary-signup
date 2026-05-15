@@ -16,7 +16,7 @@ jobs:
       - name: Inject token
         env:
           TOKEN: ${{ secrets.GH_ISSUES_TOKEN }}
-        run: python3 -c "import os;f=open('signup.html');c=f.read();f.close();open('signup.html','w').write(c.replace('{{GH_ISSUES_TOKEN}}',os.environ['TOKEN']))"
+        run: python3 -c "import os;f=open('index.html');c=f.read();f.close();open('index.html','w').write(c.replace('{{GH_ISSUES_TOKEN}}',os.environ['TOKEN']))"
 
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4
