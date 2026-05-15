@@ -14,8 +14,10 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Inject token
+        env:
+          TOKEN: ${{ secrets.GH_ISSUES_TOKEN }}
         run: |
-          sed -i 's|{{GH_ISSUES_TOKEN}}|${{ secrets.GH_ISSUES_TOKEN }}|g' signup.html
+          sed -i "s@{{GH_ISSUES_TOKEN}}@${TOKEN}@g" signup.html
 
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4
