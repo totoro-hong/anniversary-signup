@@ -4,8 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>一周年 · 浪漫约会邀请</title>
-    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;600;700&family=Cormorant+Garamond:ital@0;1&display=swap" rel="stylesheet">
     <style>
+        /* ========================================
+           Reset & Base
+        ======================================== */
         * {
             margin: 0;
             padding: 0;
@@ -14,200 +19,374 @@
 
         body {
             min-height: 100vh;
-            background: linear-gradient(145deg, #fdf2f8 0%, #fce7f3 20%, #ede9fe 50%, #dbeafe 80%, #fdf2f8 100%);
+            background: #f5efe6;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
-            font-family: 'ZCOOL XiaoWei', '楷体', 'KaiTi', serif;
+            padding: 24px;
+            font-family: 'Noto Serif SC', '宋体', 'SimSun', serif;
             position: relative;
             overflow-x: hidden;
+            color: #3d1a2e;
         }
 
-        /* Floating particles */
-        .particles-bg {
+        /* ========================================
+           Background — warm ambient + paper grain
+        ======================================== */
+        .bg-ambient {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
-            overflow: hidden;
             z-index: 0;
+            pointer-events: none;
         }
 
-        .particle {
-            position: absolute;
-            border-radius: 50%;
-            animation: floatUp linear infinite;
-        }
-
-        .particle.r { background: rgba(225, 29, 72, 0.15); }
-        .particle.b { background: rgba(37, 99, 235, 0.12); }
-        .particle.g { background: rgba(212, 168, 75, 0.15); }
-
-        @keyframes floatUp {
-            0% {
-                transform: translateY(100vh) translateX(0) scale(0);
-                opacity: 0;
-            }
-            10% { opacity: 0.6; }
-            90% { opacity: 0.6; }
-            100% {
-                transform: translateY(-10vh) translateX(60px) scale(1);
-                opacity: 0;
-            }
-        }
-
-        .container {
-            background: rgba(255, 255, 255, 0.88);
-            backdrop-filter: blur(20px);
-            border-radius: 28px;
-            padding: 48px 40px;
-            max-width: 520px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(225, 29, 72, 0.08),
-                        0 8px 24px rgba(37, 99, 235, 0.06),
-                        0 0 0 1px rgba(255, 255, 255, 0.8) inset;
-            position: relative;
-            z-index: 1;
-        }
-
-        .container::before {
+        .bg-ambient::before {
             content: '';
             position: absolute;
-            top: -1px;
-            left: -1px;
-            right: -1px;
-            bottom: -1px;
-            border-radius: 28px;
-            background: linear-gradient(135deg, rgba(225,29,72,0.15), transparent 40%, transparent 60%, rgba(37,99,235,0.15));
-            z-index: -1;
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask-composite: exclude;
-            -webkit-mask-composite: xor;
-            padding: 1px;
+            top: -40%;
+            left: -20%;
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(ellipse at center, rgba(196, 155, 94, 0.12) 0%, transparent 70%);
         }
 
+        .bg-ambient::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            right: -20%;
+            width: 70%;
+            height: 70%;
+            background: radial-gradient(ellipse at center, rgba(182, 95, 106, 0.08) 0%, transparent 70%);
+        }
+
+        /* Paper texture via SVG noise filter */
+        .paper-noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.35;
+            mix-blend-mode: multiply;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 200px 200px;
+        }
+
+        /* Floating particles — glowing embers */
+        .embers {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .ember {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(1px);
+            animation: emberDrift linear infinite;
+        }
+
+        .ember.gold { background: rgba(196, 155, 94, 0.25); }
+        .ember.rose { background: rgba(182, 95, 106, 0.2); }
+        .ember.warm { background: rgba(218, 165, 105, 0.2); }
+
+        @keyframes emberDrift {
+            0% {
+                transform: translateY(100vh) translateX(0) scale(0.2);
+                opacity: 0;
+            }
+            12% { opacity: 0.5; }
+            85% { opacity: 0.3; }
+            100% {
+                transform: translateY(-10vh) translateX(40px) scale(0.8);
+                opacity: 0;
+            }
+        }
+
+        /* ========================================
+           Letter Container
+        ======================================== */
+        .letter-container {
+            position: relative;
+            z-index: 1;
+            max-width: 580px;
+            width: 100%;
+            background: #fcf9f5;
+            border-radius: 4px;
+            padding: 56px 48px 40px;
+            box-shadow:
+                0 2px 4px rgba(61, 26, 46, 0.02),
+                0 8px 24px rgba(61, 26, 46, 0.04),
+                0 32px 64px rgba(61, 26, 46, 0.06);
+            opacity: 0;
+            transform: translateY(18px);
+            animation: letterAppear 1s ease-out forwards;
+        }
+
+        @keyframes letterAppear {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Decorative top border */
+        .letter-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 40px;
+            right: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #c49b5e, transparent);
+        }
+
+        /* ========================================
+           Wax Seal
+        ======================================== */
+        .wax-seal {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 28px;
+            margin-top: -8px;
+        }
+
+        .wax-seal svg {
+            width: 64px;
+            height: 64px;
+            filter: drop-shadow(0 2px 8px rgba(196, 155, 94, 0.3));
+            animation: sealGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes sealGlow {
+            0%, 100% { filter: drop-shadow(0 2px 8px rgba(196, 155, 94, 0.3)); }
+            50% { filter: drop-shadow(0 2px 16px rgba(196, 155, 94, 0.5)); }
+        }
+
+        /* ========================================
+           Header
+        ======================================== */
         .header {
             text-align: center;
-            margin-bottom: 32px;
+            margin-bottom: 24px;
         }
 
         .header .sub-label {
             display: inline-block;
-            background: linear-gradient(135deg, rgba(225,29,72,0.08), rgba(37,99,235,0.08));
-            color: #be185d;
-            padding: 6px 24px;
-            border-radius: 20px;
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
             font-size: 13px;
-            letter-spacing: 4px;
-            margin-bottom: 14px;
-            border: 1px solid rgba(225, 29, 72, 0.12);
+            color: #c49b5e;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
         }
 
         .header h1 {
             font-family: 'Ma Shan Zheng', '华文行楷', 'Xingkai SC', cursive;
-            font-size: 44px;
-            background: linear-gradient(135deg, #e11d48, #be185d 30%, #6366f1 70%, #2563eb);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1.35;
-            letter-spacing: 4px;
-        }
-
-        .header .date {
-            font-family: 'Ma Shan Zheng', cursive;
-            font-size: 18px;
-            color: #831843;
-            margin-top: 10px;
+            font-size: 42px;
+            font-weight: 400;
+            color: #3d1a2e;
+            line-height: 1.4;
             letter-spacing: 6px;
         }
 
-        .divider {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin: 28px 0;
+        .header h1 .accent {
+            color: #c49b5e;
         }
 
-        .divider::before,
-        .divider::after {
+        .header .date {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 16px;
+            color: #b65f6a;
+            margin-top: 6px;
+            letter-spacing: 4px;
+        }
+
+        .header .date::before,
+        .header .date::after {
+            content: ' — ';
+            color: #c49b5e;
+        }
+
+        /* ========================================
+           Ornamental Divider
+        ======================================== */
+        .ornament {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 28px 0;
+            color: #c49b5e;
+            font-size: 12px;
+            user-select: none;
+        }
+
+        .ornament::before,
+        .ornament::after {
             content: '';
             flex: 1;
             height: 1px;
+            background: linear-gradient(90deg, transparent, #c49b5e44, transparent);
         }
 
-        .divider::before {
-            background: linear-gradient(90deg, transparent, rgba(225,29,72,0.3));
-        }
-        .divider::after {
-            background: linear-gradient(90deg, rgba(37,99,235,0.3), transparent);
-        }
-
-        .divider span {
-            color: rgba(225, 29, 72, 0.4);
-            font-size: 14px;
+        .ornament .diamond {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: #c49b5e;
+            transform: rotate(45deg);
+            opacity: 0.6;
         }
 
-        /* Activity cards */
+        /* ========================================
+           Letter Body
+        ======================================== */
+        .letter-body {
+            margin-bottom: 24px;
+        }
+
+        .letter-body p {
+            font-size: 15px;
+            line-height: 1.9;
+            color: #4a2a38;
+            letter-spacing: 1px;
+            margin-bottom: 14px;
+            text-align: justify;
+        }
+
+        .letter-body .salutation {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 22px;
+            color: #3d1a2e;
+            letter-spacing: 4px;
+        }
+
+        .letter-body .dropcap {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 32px;
+            float: left;
+            line-height: 1;
+            margin: 4px 10px 0 0;
+            color: #3d1a2e;
+        }
+
+        .letter-body .signoff {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 20px;
+            text-align: right;
+            color: #3d1a2e;
+            letter-spacing: 3px;
+            margin-top: 4px;
+            margin-bottom: 0;
+        }
+
+        /* ========================================
+           Activity Cards
+        ======================================== */
         .activity-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 14px;
-            margin: 8px 0 4px;
+            gap: 16px;
+            margin: 20px 0 4px;
         }
 
         .activity-card {
-            background: linear-gradient(145deg, rgba(225,29,72,0.04), rgba(37,99,235,0.03));
-            border: 1px solid rgba(225, 29, 72, 0.08);
-            border-radius: 20px;
-            padding: 20px 16px;
+            background: #faf6f0;
+            border: 1px solid #e8ddd0;
+            border-radius: 2px;
+            padding: 24px 20px 20px;
             text-align: center;
-            transition: all 0.3s ease;
+            transition: all 0.35s ease;
+            position: relative;
+        }
+
+        .activity-card::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 30%;
+            right: 30%;
+            height: 2px;
+            background: #c49b5e;
+            opacity: 0;
+            transition: all 0.35s ease;
         }
 
         .activity-card:hover {
+            background: #f8f0e6;
+            border-color: #d4bfa8;
             transform: translateY(-2px);
-            border-color: rgba(225, 29, 72, 0.2);
-            box-shadow: 0 8px 24px rgba(225, 29, 72, 0.06);
+        }
+
+        .activity-card:hover::before {
+            opacity: 1;
+            left: 20%;
+            right: 20%;
         }
 
         .activity-card .icon {
-            font-size: 28px;
+            font-size: 32px;
             margin-bottom: 8px;
+            display: block;
         }
 
         .activity-card .title {
             font-family: 'Ma Shan Zheng', cursive;
-            font-size: 20px;
-            color: #9d174d;
-            letter-spacing: 2px;
+            font-size: 22px;
+            color: #3d1a2e;
+            letter-spacing: 4px;
         }
 
         .activity-card .detail {
             font-size: 13px;
-            color: #6b4c7a;
+            color: #7a5a68;
             margin-top: 4px;
             letter-spacing: 1px;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
         .activity-card .time {
             display: inline-block;
-            margin-top: 6px;
-            font-size: 12px;
-            color: #2563eb;
-            background: rgba(37, 99, 235, 0.08);
-            padding: 2px 12px;
-            border-radius: 10px;
-            letter-spacing: 1px;
+            margin-top: 8px;
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 14px;
+            color: #c49b5e;
+            padding: 2px 16px;
+            border: 1px solid #e8ddd0;
+            border-radius: 2px;
+            letter-spacing: 2px;
         }
 
-        .activity-card:nth-child(2) .time {
-            color: #e11d48;
-            background: rgba(225, 29, 72, 0.08);
+        /* ========================================
+           Form
+        ======================================== */
+        .form-section {
+            margin-top: 8px;
+        }
+
+        .form-section .form-intro {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 20px;
+            color: #3d1a2e;
+            text-align: center;
+            letter-spacing: 4px;
+            margin-bottom: 20px;
         }
 
         .form-group {
@@ -216,55 +395,53 @@
 
         .form-group label {
             display: block;
-            font-size: 15px;
-            color: #6b21a8;
+            font-size: 14px;
+            color: #5a3a48;
             margin-bottom: 6px;
             letter-spacing: 2px;
         }
 
         .form-group label .required {
-            color: #e11d48;
-            margin-left: 2px;
+            color: #b65f6a;
         }
 
         .form-group input,
         .form-group textarea {
             width: 100%;
-            padding: 13px 16px;
-            border: 1.5px solid rgba(225, 29, 72, 0.1);
-            border-radius: 14px;
+            padding: 12px 16px;
+            border: 1px solid #e8ddd0;
+            border-radius: 2px;
             font-size: 15px;
-            font-family: 'ZCOOL XiaoWei', '楷体', serif;
-            background: rgba(255, 255, 255, 0.7);
+            font-family: 'Noto Serif SC', '宋体', serif;
+            background: #fdfcfa;
             transition: all 0.3s ease;
             outline: none;
-            color: #1e0a3c;
+            color: #3d1a2e;
         }
 
         .form-group input:focus,
         .form-group textarea:focus {
-            border-color: #818cf8;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+            border-color: #c49b5e;
             background: #fff;
+            box-shadow: 0 0 0 3px rgba(196, 155, 94, 0.08);
         }
 
         .form-group input::placeholder,
         .form-group textarea::placeholder {
-            color: rgba(107, 33, 168, 0.25);
+            color: #c4b5ae;
             font-size: 14px;
         }
 
         .form-group textarea {
             resize: vertical;
             min-height: 90px;
-            line-height: 1.6;
+            line-height: 1.8;
         }
 
-        /* radio group for cake */
         .radio-group {
             display: flex;
-            gap: 24px;
-            margin-top: 6px;
+            gap: 28px;
+            margin-top: 4px;
         }
 
         .radio-group label {
@@ -272,19 +449,19 @@
             align-items: center;
             gap: 8px;
             cursor: pointer;
-            font-size: 15px;
-            color: #6b21a8;
+            font-size: 14px;
+            color: #5a3a48;
             letter-spacing: 1px;
         }
 
         .radio-group input[type="radio"] {
             appearance: none;
             -webkit-appearance: none;
-            width: 18px;
-            height: 18px;
-            border: 2px solid rgba(225, 29, 72, 0.25);
+            width: 16px;
+            height: 16px;
+            border: 1.5px solid #d4bfa8;
             border-radius: 50%;
-            background: #fff;
+            background: #fdfcfa;
             position: relative;
             cursor: pointer;
             transition: all 0.25s ease;
@@ -292,230 +469,363 @@
         }
 
         .radio-group input[type="radio"]:checked {
-            border-color: #e11d48;
-            background: radial-gradient(circle, #e11d48 40%, transparent 42%);
-            box-shadow: 0 0 12px rgba(225, 29, 72, 0.15);
+            border-color: #b65f6a;
+            background: radial-gradient(circle, #b65f6a 40%, transparent 42%);
         }
 
         .btn-submit {
             width: 100%;
-            padding: 15px;
+            padding: 14px 20px;
             border: none;
-            border-radius: 50px;
-            background: linear-gradient(135deg, #e11d48, #9333ea 50%, #6366f1);
-            color: #fff;
-            font-family: 'Ma Shan Zheng', '华文行楷', cursive;
+            border-radius: 2px;
+            background: #3d1a2e;
+            color: #f5efe6;
+            font-family: 'Ma Shan Zheng', cursive;
             font-size: 22px;
-            letter-spacing: 6px;
+            letter-spacing: 8px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 6px 28px rgba(225, 29, 72, 0.25);
-            margin-top: 6px;
+            transition: all 0.35s ease;
+            margin-top: 8px;
         }
 
         .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 36px rgba(225, 29, 72, 0.35);
+            background: #2d1220;
+            letter-spacing: 12px;
         }
 
         .btn-submit:active {
-            transform: translateY(0);
+            transform: scale(0.98);
         }
 
-        .footer-text {
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            letter-spacing: 8px;
+        }
+
+        /* ========================================
+           Footer
+        ======================================== */
+        .letter-footer {
             text-align: center;
-            margin-top: 22px;
-            font-size: 14px;
-            color: rgba(107, 33, 168, 0.35);
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 1px solid #e8ddd0;
+        }
+
+        .letter-footer p {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 13px;
+            color: #c4b5ae;
             letter-spacing: 3px;
         }
 
-        /* Toast / success message */
-        .toast {
+        .letter-footer .admin-link {
+            margin-top: 8px;
+        }
+
+        .letter-footer .admin-link a {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 12px;
+            color: #c4b5ae;
+            text-decoration: none;
+            letter-spacing: 2px;
+            transition: color 0.2s;
+        }
+
+        .letter-footer .admin-link a:hover {
+            color: #b65f6a;
+        }
+
+        /* ========================================
+           Success Toast
+        ======================================== */
+        .success-toast {
             display: none;
             text-align: center;
-            padding: 40px 20px;
+            padding: 32px 20px;
         }
 
-        .toast .heart-big {
-            font-size: 64px;
-            animation: pulse 1.2s ease-in-out infinite;
+        .success-toast .heart-big {
+            font-size: 56px;
+            display: block;
+            margin-bottom: 8px;
+            animation: toastPulse 1.5s ease-in-out infinite;
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.15); }
+        @keyframes toastPulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
         }
 
-        .toast h2 {
+        .success-toast h2 {
             font-family: 'Ma Shan Zheng', cursive;
-            font-size: 32px;
-            background: linear-gradient(135deg, #e11d48, #6366f1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin: 16px 0 8px;
+            font-size: 36px;
+            color: #3d1a2e;
+            letter-spacing: 6px;
+            margin: 12px 0 8px;
         }
 
-        .toast p {
-            color: #6b21a8;
-            font-size: 16px;
+        .success-toast p {
+            font-size: 15px;
+            color: #5a3a48;
+            letter-spacing: 2px;
+            line-height: 1.8;
         }
 
-        /* View responses button */
-        .admin-link {
-            text-align: center;
+        .success-toast .toast-sub {
             margin-top: 12px;
-            font-size: 12px;
-        }
-        .admin-link a {
-            color: rgba(107, 33, 168, 0.3);
-            text-decoration: none;
-            letter-spacing: 1px;
-        }
-        .admin-link a:hover {
-            color: rgba(107, 33, 168, 0.6);
+            font-size: 13px;
+            color: #c4b5ae;
+            font-style: italic;
         }
 
-        @media (max-width: 480px) {
-            .container {
-                padding: 28px 18px;
+        /* ========================================
+           Staggered Animation for content
+        ======================================== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeIn 0.7s ease-out forwards;
+        }
+
+        .fade-in:nth-child(1) { animation-delay: 0.2s; }
+        .fade-in:nth-child(2) { animation-delay: 0.35s; }
+        .fade-in:nth-child(3) { animation-delay: 0.5s; }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========================================
+           Responsive
+        ======================================== */
+        @media (max-width: 520px) {
+            .letter-container {
+                padding: 36px 24px 28px;
+            }
+            .letter-container::before {
+                left: 24px;
+                right: 24px;
             }
             .header h1 {
                 font-size: 32px;
+                letter-spacing: 4px;
             }
             .activity-grid {
                 grid-template-columns: 1fr;
+            }
+            .letter-body p {
+                font-size: 14px;
+            }
+            .wax-seal svg {
+                width: 52px;
+                height: 52px;
+            }
+            .radio-group {
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .letter-container {
+                padding: 28px 16px 20px;
+            }
+            .header h1 {
+                font-size: 28px;
             }
         }
     </style>
 </head>
 <body>
 
-<div class="particles-bg" id="particlesBg"></div>
+    <!-- Background layers -->
+    <div class="bg-ambient"></div>
+    <div class="paper-noise"></div>
+    <div class="embers" id="embers"></div>
 
-<div class="container" id="formContainer">
-    <div class="header">
-        <div class="sub-label">✦ 邀 请 函 ✦</div>
-        <h1>一周年<br>浪漫约会活动</h1>
-        <div class="date">5 月 16 日 · 与 你 共 赴</div>
-    </div>
-
-    <div class="divider"><span>✦</span></div>
-
-    <div class="activity-grid">
-        <div class="activity-card">
-            <div class="icon">🎤</div>
-            <div class="title">脱口秀</div>
-            <div class="detail">单立人 DownTown</div>
-            <div class="time">16:00</div>
-        </div>
-        <div class="activity-card">
-            <div class="icon">🍷</div>
-            <div class="title">浪漫晚餐</div>
-            <div class="detail">COMMUNE RESERVE.</div>
-            <div class="time">18:00</div>
-        </div>
-    </div>
-
-    <div class="divider"><span>✦</span></div>
-
-    <form id="signupForm">
-        <div class="form-group">
-            <label>你的名字 <span class="required">*</span></label>
-            <input type="text" name="姓名" id="name" placeholder="请输入你的姓名" required>
+    <!-- Main Letter -->
+    <div class="letter-container" id="formContainer">
+        <!-- Wax Seal -->
+        <div class="wax-seal">
+            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="32" cy="32" r="28" fill="#8b2a2a"/>
+                <circle cx="32" cy="32" r="26" fill="#a03535"/>
+                <circle cx="32" cy="32" r="24" fill="#b84040" opacity="0.9"/>
+                <circle cx="32" cy="32" r="24" fill="url(#sealGrad)"/>
+                <defs>
+                    <radialGradient id="sealGrad" cx="38%" cy="35%">
+                        <stop offset="0%" stop-color="#d4604a"/>
+                        <stop offset="60%" stop-color="#b84040"/>
+                        <stop offset="100%" stop-color="#7a2020"/>
+                    </radialGradient>
+                </defs>
+                <!-- Decorative inner ring -->
+                <circle cx="32" cy="32" r="16" fill="none" stroke="#e8c49a" stroke-width="0.8" opacity="0.5"/>
+                <circle cx="32" cy="32" r="12" fill="none" stroke="#e8c49a" stroke-width="0.5" opacity="0.3"/>
+                <!-- Letter "L" stylized -->
+                <text x="32" y="38" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="20" font-style="italic" fill="#e8c49a" opacity="0.8">L</text>
+                <circle cx="32" cy="32" r="3" fill="#e8c49a" opacity="0.15"/>
+            </svg>
         </div>
 
-        <div class="form-group">
-            <label>联系电话 <span class="required">*</span></label>
-            <input type="tel" name="电话" id="phone" placeholder="请输入手机号码" required>
+        <!-- Header -->
+        <div class="header">
+            <div class="sub-label">Invitation</div>
+            <h1>一周年 <span class="accent">·</span> 浪漫约会</h1>
+            <div class="date">May 16 &mdash; with you</div>
         </div>
 
-        <div class="form-group">
-            <label>想要蛋糕吗？</label>
-            <div class="radio-group">
-                <label><input type="radio" name="蛋糕" value="要 🍰" checked> 要 🍰</label>
-                <label><input type="radio" name="蛋糕" value="不要"> 不要</label>
+        <div class="ornament"><span class="diamond"></span></div>
+
+        <!-- Letter Body -->
+        <div class="letter-body">
+            <p class="salutation fade-in">亲爱的你：</p>
+            <p class="fade-in">
+                <span class="dropcap">时</span>间过得真快，转眼间我们已经一起走过了一年。这一年里，每一个有你的日子都闪闪发光。想在这个特别的日子，和你一起创造更多美好的回忆。
+            </p>
+            <p class="fade-in">
+                所以我悄悄策划了这次约会——一场脱口秀，一顿浪漫晚餐，简单却用心。希望你会喜欢。
+            </p>
+        </div>
+
+        <!-- Activity Cards -->
+        <div class="activity-grid">
+            <div class="activity-card">
+                <span class="icon">🎤</span>
+                <div class="title">脱口秀</div>
+                <div class="detail">单立人 DownTown</div>
+                <div class="time">16:00</div>
+            </div>
+            <div class="activity-card">
+                <span class="icon">🍷</span>
+                <div class="title">浪漫晚餐</div>
+                <div class="detail">COMMUNE RESERVE.</div>
+                <div class="time">18:00</div>
             </div>
         </div>
 
-        <div class="form-group">
-            <label>想对我说些什么 <span class="required">*</span></label>
-            <textarea name="悄悄话" id="message" placeholder="写一段悄悄话吧 …" required></textarea>
+        <div class="ornament"><span class="diamond"></span></div>
+
+        <!-- Form -->
+        <div class="form-section">
+            <p class="form-intro">告诉我你来不来 💌</p>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label>你的名字 <span class="required">*</span></label>
+                    <input type="text" name="姓名" id="name" placeholder="请输入你的名字" required>
+                </div>
+
+                <div class="form-group">
+                    <label>联系电话 <span class="required">*</span></label>
+                    <input type="tel" name="电话" id="phone" placeholder="手机号码" required>
+                </div>
+
+                <div class="form-group">
+                    <label>想要蛋糕吗？</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="蛋糕" value="要 🍰" checked> 要 🍰</label>
+                        <label><input type="radio" name="蛋糕" value="不要"> 不要</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>想对我说的话 <span class="required">*</span></label>
+                    <textarea name="悄悄话" id="message" placeholder="写一段悄悄话吧……" required></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">💌 报名</button>
+            </form>
         </div>
 
-        <button type="submit" class="btn-submit">💕 报名参加</button>
-    </form>
-
-    <div class="footer-text">— 期 待 与 你 共 度 这 一 天 —</div>
-
-    <div class="admin-link"><a href="mailto:1430576027@qq.com" target="_blank">📧 有问题？发邮件给我</a></div>
-</div>
-
-<!-- Success Toast -->
-<div class="container" id="successToast" style="display:none;">
-    <div class="toast">
-        <div class="heart-big">💖</div>
-        <h2>报名成功！</h2>
-        <p>5 月 16 日，不见不散 💕</p>
-        <p style="margin-top:8px;font-size:13px;color:rgba(107,33,168,0.4);">已通过 Issue 提交，请等待回复 ❤</p>
+        <div class="letter-footer">
+            <p>&mdash; 期待与你共度这一天 &mdash;</p>
+            <div class="admin-link"><a href="mailto:1430576027@qq.com">有问题？给我发邮件</a></div>
+        </div>
     </div>
-</div>
 
-<script>
-    // Floating particles
-    const bg = document.getElementById('particlesBg');
-    for (let i = 0; i < 35; i++) {
-        const el = document.createElement('span');
-        el.className = 'particle ' + (i % 3 === 0 ? 'r' : i % 3 === 1 ? 'b' : 'g');
-        const size = 4 + Math.random() * 8;
-        el.style.width = size + 'px';
-        el.style.height = size + 'px';
-        el.style.left = Math.random() * 100 + '%';
-        el.style.animationDuration = (18 + Math.random() * 22) + 's';
-        el.style.animationDelay = (Math.random() * 28) + 's';
-        bg.appendChild(el);
-    }
+    <!-- Success Toast -->
+    <div class="letter-container" id="successToast" style="display:none;">
+        <div class="success-toast">
+            <span class="heart-big">💖</span>
+            <div class="wax-seal" style="margin-bottom:0;">
+                <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:48px;height:48px;">
+                    <circle cx="32" cy="32" r="28" fill="#8b2a2a"/>
+                    <circle cx="32" cy="32" r="26" fill="#a03535"/>
+                    <circle cx="32" cy="32" r="24" fill="#b84040" opacity="0.9"/>
+                    <circle cx="32" cy="32" r="16" fill="none" stroke="#e8c49a" stroke-width="0.8" opacity="0.5"/>
+                    <text x="32" y="38" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="24" font-style="italic" fill="#e8c49a" opacity="0.8">♥</text>
+                </svg>
+            </div>
+            <h2>报名成功</h2>
+            <p>5 月 16 日，不见不散 💕</p>
+            <p class="toast-sub">已通过 Issue 提交，请等待回复 ❤</p>
+        </div>
+    </div>
 
-    // Form submit — sends data to Vercel serverless API
-    document.getElementById('signupForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        const name = document.getElementById('name').value.trim();
-        const phone = document.getElementById('phone').value.trim();
-        const message = document.getElementById('message').value.trim();
-        const cake = document.querySelector('input[name="蛋糕"]:checked').value;
-
-        if (!name || !phone || !message) {
-            alert('请填写所有必填信息哦 💕');
-            return;
+    <script>
+        // ========================================
+        // Floating Embers
+        // ========================================
+        const embersEl = document.getElementById('embers');
+        for (let i = 0; i < 28; i++) {
+            const el = document.createElement('span');
+            el.className = 'ember ' + (
+                i % 3 === 0 ? 'gold' : i % 3 === 1 ? 'rose' : 'warm'
+            );
+            const size = 3 + Math.random() * 7;
+            el.style.width = size + 'px';
+            el.style.height = size + 'px';
+            el.style.left = Math.random() * 100 + '%';
+            el.style.animationDuration = (22 + Math.random() * 28) + 's';
+            el.style.animationDelay = (Math.random() * 30) + 's';
+            embersEl.appendChild(el);
         }
 
-        const submitBtn = this.querySelector('.btn-submit');
-        submitBtn.textContent = '💕 提交中…';
-        submitBtn.disabled = true;
+        // ========================================
+        // Form Submission
+        // ========================================
+        document.getElementById('signupForm').addEventListener('submit', function (e) {
+            e.preventDefault();
 
-        fetch('/api/submit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, phone, cake, message })
-        }).then(res => res.json()).then(data => {
-            if (data.success) {
-                document.getElementById('formContainer').style.display = 'none';
-                document.getElementById('successToast').style.display = 'block';
-            } else {
-                alert('提交失败，请稍后再试 🙏');
-                submitBtn.textContent = '💕 报名参加';
-                submitBtn.disabled = false;
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const message = document.getElementById('message').value.trim();
+            const cake = document.querySelector('input[name="蛋糕"]:checked').value;
+
+            if (!name || !phone || !message) {
+                alert('请填写所有必填信息哦 💕');
+                return;
             }
-        }).catch(() => {
-            alert('网络错误，请稍后再试 🙏');
-            submitBtn.textContent = '💕 报名参加';
-            submitBtn.disabled = false;
-        });
-    });
 
-</script>
+            const submitBtn = this.querySelector('.btn-submit');
+            submitBtn.textContent = '💌 提交中…';
+            submitBtn.disabled = true;
+
+            fetch('/api/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, phone, cake, message })
+            }).then(res => res.json()).then(data => {
+                if (data.success) {
+                    document.getElementById('formContainer').style.display = 'none';
+                    document.getElementById('successToast').style.display = 'block';
+                } else {
+                    alert('提交失败，请稍后再试 🙏');
+                    submitBtn.textContent = '💌 报名';
+                    submitBtn.disabled = false;
+                }
+            }).catch(() => {
+                alert('网络错误，请稍后再试 🙏');
+                submitBtn.textContent = '💌 报名';
+                submitBtn.disabled = false;
+            });
+        });
+    </script>
 
 </body>
 </html>
